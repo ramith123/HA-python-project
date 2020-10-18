@@ -7,17 +7,21 @@ components = None
 
 
 def doServiceCall(url, headers, data):
-    url += data.pop("actionType") + "/" + data.pop("domain") + "/" + data.pop("action")
+    url += data.pop("actionType")
+    if "domain" in data:
+        url += "/" + data.pop("domain")
+    if "action" in data:
+        url += "/" + data.pop("action")
+    print(url)
+    print(data)
     response = post(url, headers=headers, json=data)
-    return response.json()
+    return response.text
 
 
-def getServiceCallData(data, component, service):
+def getServiceCallData(data, component, action):
     componentData = getFirstLevelJsonData(data["components"][component])
-    serviceData = getFirstLevelJsonData(
-        data["components"][component]["services"][service]
-    )
-    componentData.update(serviceData)
+    actionData = getFirstLevelJsonData(data["components"][component]["actions"][action])
+    componentData.update(actionData)
     return componentData
 
 
@@ -64,3 +68,4 @@ url = getAPIUrl(secret)
 print(serviceCall)
 if APIExists(url):
     res = doServiceCall(url, headers, serviceCall)
+    print(res)
