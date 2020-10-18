@@ -3,20 +3,32 @@ import json
 
 data = None
 secret = None
-serviceCall = {
-    "domain": "climate",
-    "service": "set_temperature",
-    "entity_id": "climate.ac",
-    "temperature": 27,
-}
+components = None
 
 
 def doServiceCall(url, headers, data):
-    url += "services/" + data.pop("domain") + "/" + data.pop("service")
-    print(data)
-    print(url)
+    url += data.pop("actionType") + "/" + data.pop("domain") + "/" + data.pop("action")
     response = post(url, headers=headers, json=data)
-    print(response.json())
+    return response.json()
+
+
+def getServiceCallData(data, component, service):
+    componentData = getFirstLevelJsonData(data["components"][component])
+    serviceData = getFirstLevelJsonData(
+        data["components"][component]["services"][service]
+    )
+    componentData.update(serviceData)
+    return componentData
+
+
+def getFirstLevelJsonData(jsonData):
+    returnData = {}
+
+    for key in jsonData.keys():
+        if not isinstance(jsonData[key], dict):
+
+            returnData[key] = jsonData[key]
+    return returnData
 
 
 def getAPIUrl(data):
@@ -39,12 +51,16 @@ with open("data.json", "r") as f:
 with open("secret.json", "r") as f:
     secret = json.load(f)
 
+
 headers = {
     "Authorization": "Bearer " + secret["LToken"].strip(),
     "content-type": "application/json",
 }
 
+components = data["components"]
 
-url = getAPIUrl(data)
+serviceCall = getServiceCallData(data, "ac", "setTemp")
+url = getAPIUrl(secret)
+print(serviceCall)
 if APIExists(url):
-    doServiceCall(url, headers, serviceCall)
+    res = doServiceCall(url, headers, serviceCall)

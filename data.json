@@ -1,0 +1,16 @@
+{
+    "components":
+    {
+        "ac":{
+            "domain": "climate",
+            "entity_id": "climate.ac",
+            "services":{
+                "setTemp": {
+                    "actionType":"services",
+                    "action": "set_temperature",
+                    "temperature": 27
+                }
+                }
+        }
+    }
+}

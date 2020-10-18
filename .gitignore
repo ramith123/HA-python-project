@@ -8,7 +8,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
-data.json
+
 secret.json
 # C extensions
 *.so
