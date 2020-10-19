@@ -1,6 +1,7 @@
 from requests import get, post
 import json
 import click
+from pathlib import Path
 
 data = None
 secret = None
@@ -14,7 +15,7 @@ def doServiceCall(url, headers, data):
         url += "/" + data.pop("action")
 
     response = post(url, headers=headers, json=data)
-    return response.text
+    return response.json()
 
 
 def getServiceCallData(data, component, action):
@@ -52,10 +53,10 @@ def APIExists(url, headers):
 @click.command()
 @click.argument("ans")
 def set_acTemp(ans):
-
-    with open("./.CustomHA/data.json", "r") as f:
+    homeFolder = str(Path.home())
+    with open(homeFolder + "/.CustomHA/data.json", "r") as f:
         data = json.load(f)
-    with open("./.CustomHA/secret.json", "r") as f:
+    with open(homeFolder + "/.CustomHA/secret.json", "r") as f:
         secret = json.load(f)
     headers = {
         "Authorization": "Bearer " + secret["LToken"].strip(),
@@ -73,8 +74,11 @@ def set_acTemp(ans):
     url = getAPIUrl(secret)
 
     if APIExists(url, headers):
-        res = doServiceCall(url, headers, serviceCall)
-        print(res)
+        try:
+            res = doServiceCall(url, headers, serviceCall)
+            print(json.dumps(res, indent=2))
+        except:
+            print("Major error occurred")
 
 
 @click.command()
