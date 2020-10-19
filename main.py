@@ -5,6 +5,16 @@ from pathlib import Path
 
 data = None
 secret = None
+serviceCall = None
+homeFolder = str(Path.home())
+with open(homeFolder + "/.CustomHA/data.json", "r") as f:
+    data = json.load(f)
+with open(homeFolder + "/.CustomHA/secret.json", "r") as f:
+    secret = json.load(f)
+headers = {
+    "Authorization": "Bearer " + secret["LToken"].strip(),
+    "content-type": "application/json",
+}
 
 
 def doServiceCall(url, headers, data):
@@ -50,19 +60,13 @@ def APIExists(url, headers):
     return False
 
 
+url = getAPIUrl(secret)
+
+
 @click.command()
 @click.argument("ans")
-def set_acTemp(ans):
-    homeFolder = str(Path.home())
-    with open(homeFolder + "/.CustomHA/data.json", "r") as f:
-        data = json.load(f)
-    with open(homeFolder + "/.CustomHA/secret.json", "r") as f:
-        secret = json.load(f)
-    headers = {
-        "Authorization": "Bearer " + secret["LToken"].strip(),
-        "content-type": "application/json",
-    }
-    serviceCall = None
+def acControls(ans):
+
     if ans == "on":
         serviceCall = getServiceCallData(data, "ac", "turnOn")
     if ans == "off":
@@ -70,8 +74,6 @@ def set_acTemp(ans):
     if ans.isnumeric():
         serviceCall = getServiceCallData(data, "ac", "setTemp")
         serviceCall["temperature"] = float(ans)
-
-    url = getAPIUrl(secret)
 
     if APIExists(url, headers):
         try:
@@ -81,6 +83,23 @@ def set_acTemp(ans):
             print("Major error occurred")
 
 
-@click.command()
-def sample():
-    print("Test")
+# @click.command()
+# @click.argument("light")
+# @click.argument("command")
+def lightsControls(light, command):
+
+    light = light.lower() + "_light"  # naming convention in data
+    if command == "on":
+        serviceCall = getServiceCallData(data, light, "turnOn")
+    if command == "off":
+        serviceCall = getServiceCallData(data, light, "turnOff")
+    if command.isnumeric():
+        serviceCall = getServiceCallData(data, light, "setBrightness")
+        serviceCall["brightness_pct"] = int(command)
+
+    if APIExists(url, headers):
+        try:
+            res = doServiceCall(url, headers, serviceCall)
+            print(json.dumps(res, indent=2))
+        except:
+            print("Major error occurred")

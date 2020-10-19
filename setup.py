@@ -6,6 +6,6 @@ setup(
     py_modules=["main"],
     install_requires=["Click", "requests"],
     entry_points={
-        "console_scripts": ["bac=main:set_acTemp", "bbac=main:sample"],
+        "console_scripts": ["bac=main:acControls", "blight=main:lightsControls"],
     },
 )
