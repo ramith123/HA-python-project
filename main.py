@@ -83,9 +83,9 @@ def acControls(ans):
             print("Major error occurred")
 
 
-# @click.command()
-# @click.argument("light")
-# @click.argument("command")
+@click.command()
+@click.argument("light")
+@click.argument("command")
 def lightsControls(light, command):
 
     light = light.lower() + "_light"  # naming convention in data
