@@ -1,9 +1,9 @@
 from requests import get, post
 import json
+import click
 
 data = None
 secret = None
-components = None
 
 
 def doServiceCall(url, headers, data):
@@ -12,8 +12,7 @@ def doServiceCall(url, headers, data):
         url += "/" + data.pop("domain")
     if "action" in data:
         url += "/" + data.pop("action")
-    print(url)
-    print(data)
+
     response = post(url, headers=headers, json=data)
     return response.text
 
@@ -42,7 +41,7 @@ def getAPIUrl(data):
     return url + "/api/"
 
 
-def APIExists(url):
+def APIExists(url, headers):
     response = get(url, headers=headers)
 
     if "API running" in response.json()["message"]:
@@ -50,22 +49,34 @@ def APIExists(url):
     return False
 
 
-with open("data.json", "r") as f:
-    data = json.load(f)
-with open("secret.json", "r") as f:
-    secret = json.load(f)
+@click.command()
+@click.argument("ans")
+def set_acTemp(ans):
+
+    with open("./.CustomHA/data.json", "r") as f:
+        data = json.load(f)
+    with open("./.CustomHA/secret.json", "r") as f:
+        secret = json.load(f)
+    headers = {
+        "Authorization": "Bearer " + secret["LToken"].strip(),
+        "content-type": "application/json",
+    }
+    serviceCall = None
+    if ans == "on":
+        serviceCall = getServiceCallData(data, "ac", "turnOn")
+    if ans == "off":
+        serviceCall = getServiceCallData(data, "ac", "turnOff")
+    if ans.isnumeric():
+        serviceCall = getServiceCallData(data, "ac", "setTemp")
+        serviceCall["temperature"] = float(ans)
+
+    url = getAPIUrl(secret)
+
+    if APIExists(url, headers):
+        res = doServiceCall(url, headers, serviceCall)
+        print(res)
 
 
-headers = {
-    "Authorization": "Bearer " + secret["LToken"].strip(),
-    "content-type": "application/json",
-}
-
-components = data["components"]
-
-serviceCall = getServiceCallData(data, "ac", "setTemp")
-url = getAPIUrl(secret)
-print(serviceCall)
-if APIExists(url):
-    res = doServiceCall(url, headers, serviceCall)
-    print(res)
+@click.command()
+def sample():
+    print("Test")

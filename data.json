@@ -10,6 +10,18 @@
                     "actionType":"services",
                     "action": "set_temperature",
                     "temperature": 27
+                },
+                "turnOn": {
+                    "domain": "climate",
+                    "actionType":"services",
+                    "action": "turn_on"
+                    
+                },
+                "turnOff": {
+                    "domain": "climate",
+                    "actionType":"services",
+                    "action": "turn_off"
+                    
                 }
                 
                 }
