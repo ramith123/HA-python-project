@@ -1,0 +1,118 @@
+{
+    "components":
+    {
+        "ac":{
+            
+            "entity_id": "climate.ac",
+            "actions":{
+                "setTemp": {
+                    "domain": "climate",
+                    "actionType":"services",
+                    "action": "set_temperature",
+                    "temperature": 27
+                },
+                "turnOn": {
+                    "domain": "climate",
+                    "actionType":"services",
+                    "action": "turn_on"
+                    
+                },
+                "turnOff": {
+                    "domain": "climate",
+                    "actionType":"services",
+                    "action": "turn_off"
+                    
+                }
+                
+            }
+        },
+        "entry_light":{
+            "entity_id": "light.entry_light",
+            "transition":1,
+            "actions":{
+                "turnOn":{
+                    "domain": "light",
+                    "actionType":"services",
+                    "action":"turn_on"
+                 },
+                 "turnOff":{
+                    "domain": "light",
+                    "actionType":"services",
+                    "action":"turn_off"
+                 },
+                 "setBrightness":{
+                    "domain": "light",
+                    "actionType":"services",
+                    "action":"turn_on",
+                    "brightness_pct": 100
+                 }
+             }
+        },
+        "main_light":{
+            "entity_id": "light.main_light",
+            "transition":1,
+            "actions":{
+                "turnOn":{
+                    "domain": "light",
+                    "actionType":"services",
+                    "action":"turn_on"
+                 },
+                 "turnOff":{
+                    "domain": "light",
+                    "actionType":"services",
+                    "action":"turn_off"
+                 },
+                 "setBrightness":{
+                    "domain": "light",
+                    "actionType":"services",
+                    "action":"turn_on",
+                    "brightness_pct": 100
+                 }
+             }
+        },
+        "lamp_light":{
+            "entity_id": "light.lamp",
+            "transition":1,
+            "actions":{
+                "turnOn":{
+                    "domain": "light",
+                    "actionType":"services",
+                    "action":"turn_on"
+                 },
+                 "turnOff":{
+                    "domain": "light",
+                    "actionType":"services",
+                    "action":"turn_off"
+                 },
+                 "setBrightness":{
+                    "domain": "light",
+                    "actionType":"services",
+                    "action":"turn_on",
+                    "brightness_pct": 100
+                 }
+             }
+        },
+        "all_light":{
+            "entity_id": "light.lamp, light.entry_light, light.main_light",
+            "transition":1,
+            "actions":{
+                "turnOn":{
+                    "domain": "light",
+                    "actionType":"services",
+                    "action":"turn_on"
+                 },
+                 "turnOff":{
+                    "domain": "light",
+                    "actionType":"services",
+                    "action":"turn_off"
+                 },
+                 "setBrightness":{
+                    "domain": "light",
+                    "actionType":"services",
+                    "action":"turn_on",
+                    "brightness_pct": 100
+                 }
+             }
+        }
+    }
+}
